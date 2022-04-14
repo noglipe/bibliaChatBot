@@ -8,15 +8,8 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 from Biblia.biblia import Biblia
 from datetime import datetime
 
-markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-markup.add(
-    types.KeyboardButton('AYUDA'),
-    types.KeyboardButton('CONTACTO'),
-    types.KeyboardButton('INFO'))
-
 bot = telebot.TeleBot(os.environ['CHAVE_API'])
 print("ChatBot Iniciado")
-
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
@@ -28,10 +21,11 @@ def send_welcome(message):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     button1 = types.KeyboardButton('/va')
+    button2 = types.KeyboardButton('/v')
     #keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True).add(button1).add(button2)
-    keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True).row(button1)
+    keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True).row(button1, button2)
 
-    bot.send_message(message.chat.id, "", reply_markup=keyboard2)
+    bot.send_message(message.chat.id, "Escolha uma Opção:", reply_markup=keyboard2)
 
 
 # Solicitar Versiculo Aleatorio

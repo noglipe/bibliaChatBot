@@ -11,7 +11,7 @@ class Biblia():
     __capitulo = ""
     texto = ''
 
-    def __init__(self, endereco):
+    def __init__(self, endereco=""):
         print(endereco)
         try:
             listEndereco = endereco[3:].lower().split(".")
