@@ -27,13 +27,11 @@ def send_welcome(message):
                 [InlineKeyboardButton("Option 3", callback_data='3')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    button1 = types.KeyboardButton('/start')
-    button2 = types.KeyboardButton('ola')
-    keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True).add(button1).add(button2)
-    keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True).row(button1, button2)
+    button1 = types.KeyboardButton('/va')
+    #keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True).add(button1).add(button2)
+    keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True).row(button1)
 
-
-    bot.send_message(message.chat.id, "Choose one letter:", reply_markup=keyboard2)
+    bot.send_message(message.chat.id, "", reply_markup=keyboard2)
 
 
 # Solicitar Versiculo Aleatorio
