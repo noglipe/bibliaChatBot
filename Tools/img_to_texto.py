@@ -1,3 +1,5 @@
+"""
+
 import pytesseract
 from .cv2 import *
 import Tools.tools
@@ -14,3 +16,5 @@ def converter(id):
     print(f'{Tools.tools.time()}-{id} - Texto Enviado!')
 
     return texto
+
+"""
