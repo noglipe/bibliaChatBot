@@ -1,9 +1,7 @@
 import pytesseract
-import cv2
+from .cv2 import *
 import Tools.tools
 
-
-# Ler Imagem
 
 def converter(id):
     imagem = cv2.imread(f'img\{id}.jpg')
