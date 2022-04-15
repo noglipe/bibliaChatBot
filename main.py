@@ -3,6 +3,7 @@ import telebot
 from telebot import types
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 import Tools.tools
+import Tools.img_to_texto
 from Config import config
 from Biblia.biblia import Biblia
 
@@ -107,6 +108,21 @@ def converterAudio(mensagem):
     except Exception as e:
         Tools.tools.enviarErroAdmin(bot, mensagem, e, "converterAudio")
 
+@bot.message_handler(content_types= ["photo"])
+def fotoPtexto(mensagem):
+    print(f'{Tools.tools.time()}-{mensagem.chat.id} - Imagem Recebida!')
+
+    file_path = bot.get_file(mensagem.photo[-1].file_id).file_path
+    file = bot.download_file(file_path)
+
+    with open(f'img/{mensagem.chat.id}.jpg', 'wb') as new_file:
+        new_file.write(file)
+        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Imagem Salva!')
+
+    #bot.send_photo(mensagem.chat.id, file)
+    #print(f'{Tools.tools.time()}-{mensagem.chat.id} - Imagem Reenviada!')
+
+    bot.send_message(mensagem.chat.id, Tools.img_to_texto.converter(mensagem.chat.id))
 
 @bot.message_handler(func=lambda mensagem: True)
 def responderTudo(mensagem):
