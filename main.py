@@ -108,6 +108,7 @@ def converterAudio(mensagem):
     except Exception as e:
         Tools.tools.enviarErroAdmin(bot, mensagem, e, "converterAudio")
 
+"""
 @bot.message_handler(content_types= ["photo"])
 def fotoPtexto(mensagem):
     print(f'{Tools.tools.time()}-{mensagem.chat.id} - Imagem Recebida!')
@@ -123,6 +124,7 @@ def fotoPtexto(mensagem):
     #print(f'{Tools.tools.time()}-{mensagem.chat.id} - Imagem Reenviada!')
 
     bot.send_message(mensagem.chat.id, Tools.img_to_texto.converter(mensagem.chat.id))
+"""
 
 @bot.message_handler(func=lambda mensagem: True)
 def responderTudo(mensagem):
