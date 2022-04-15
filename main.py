@@ -36,24 +36,26 @@ def verciculoAleatorio(mensagem):
     try:
         biblia = Biblia()
         biblia.versiculoAleatorio()
-        bot.send_message(mensagem.chat.id, biblia.texto)
+        bot.send_message(mensagem.chat.id, biblia.texto())
     except Exception as e:
-        Tools.tools.enviarErroAdmin(bot, mensagem, e)
+        Tools.tools.enviarErroAdmin(bot, mensagem, e, 'verciculoAleatorio')
 
-
-@bot.message_handler(commands=["vaa"])
+# Texto em Audio
+@bot.message_handler(commands=["audiova"])
 def verciculoAleatorio(mensagem):
     try:
         biblia = Biblia()
-        biblia.versiculoAleatorioAudio()
-        bot.send_message(mensagem.chat.id, biblia.texto)
+        f_patch = biblia.converterAudioESalvar(mensagem.chat.id)
+        bot.send_message(mensagem.chat.id, biblia.texto())
+
+        file = open(f'f_patch', 'rb')
+
+        bot.send_audio(mensagem.chat.id, file)
+        file.close()
+        if os.path.exists(f_patch):
+            os.remove(f_patch)
     except Exception as e:
-        bot.send_message(mensagem.chat.id, "Algo deu Errado!")
-        bot.send_message(os.environ['MY_ID'], str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 "  + str(e))
-        print(mensagem)
-
-
-
+        Tools.tools.enviarErroAdmin(bot, mensagem, e, 'verciculoAleatorio')
 
 @bot.message_handler(commands=["v", "V"])
 def verciculo(mensagem):
@@ -71,15 +73,15 @@ def verciculo(mensagem):
         try:
             biblia = Biblia(mensagem.text)
             biblia.versiculo()
-            bot.send_message(mensagem.chat.id, biblia.texto)
+            bot.send_message(mensagem.chat.id, biblia.texto())
         except Exception as e:
-            bot.send_message(mensagem.chat.id, "Algo deu Errado!")
-            bot.send_message(os.environ['MY_ID'], str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 " + str(e))
-            print(mensagem)
+            Tools.tools.enviarErroAdmin(bot, mensagem, e)
 
+
+@bot.message_handler(func=lambda message: True)
+def responderTudo(message):
     if config.devAtivo == True:
-        @bot.message_handler(func=lambda message: True)
-        def echo_message(message):
-            bot.reply_to(message, "ChatBot Rodando em Modo de Desenvolvimento!\nO Desenvolvedor Está Realizando Atualizações!\n SISTEMA INSTAVEL")
+        print("Já Acabou?")
+        bot.reply_to(message, "ChatBot Rodando em Modo de Desenvolvimento!\nO Desenvolvedor Está Atualizando!\n SISTEMA INSTAVEL")
 
 bot.polling()
