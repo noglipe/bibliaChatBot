@@ -99,7 +99,7 @@ class Biblia:
         else:
             self.__texto = "Algo deu Errado!"
 
-    def versiculo2Aleatorio(self):
+    def versiculoAleatorio(self):
         """
         Preenche a variável texto com o retorno da busca por um versículo aleatório na API
         :return:
