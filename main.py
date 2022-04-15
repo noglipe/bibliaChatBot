@@ -1,9 +1,11 @@
 # Este é um chatBot de Versiculos biblicos.
-
 import os
 import telebot
 from telebot import types
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+
+import Tools.tools
+import config
 
 from Biblia.biblia import Biblia
 from datetime import datetime
@@ -36,9 +38,21 @@ def verciculoAleatorio(mensagem):
         biblia.versiculoAleatorio()
         bot.send_message(mensagem.chat.id, biblia.texto)
     except Exception as e:
+        Tools.tools.enviarErroAdmin(bot, mensagem, e)
+
+
+@bot.message_handler(commands=["vaa"])
+def verciculoAleatorio(mensagem):
+    try:
+        biblia = Biblia()
+        biblia.versiculoAleatorioAudio()
+        bot.send_message(mensagem.chat.id, biblia.texto)
+    except Exception as e:
         bot.send_message(mensagem.chat.id, "Algo deu Errado!")
         bot.send_message(os.environ['MY_ID'], str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 "  + str(e))
         print(mensagem)
+
+
 
 
 @bot.message_handler(commands=["v", "V"])
@@ -62,5 +76,10 @@ def verciculo(mensagem):
             bot.send_message(mensagem.chat.id, "Algo deu Errado!")
             bot.send_message(os.environ['MY_ID'], str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 " + str(e))
             print(mensagem)
+
+    if config.devAtivo == True:
+        @bot.message_handler(func=lambda message: True)
+        def echo_message(message):
+            bot.reply_to(message, "ChatBot Rodando em Modo de Desenvolvimento!\nO Desenvolvedor Está Realizando Atualizações!\n SISTEMA INSTAVEL")
 
 bot.polling()

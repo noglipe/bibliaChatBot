@@ -1,4 +1,5 @@
 import requests
+import pyttsx3
 
 #Estou utilizando a abibliadigital.com.br para retornar os versiculos
 class Biblia():
@@ -27,7 +28,7 @@ class Biblia():
         except:
             pass
 
-    def versiculoAleatorio(self):
+    def versiculo2Aleatorio(self):
         url = f'{self.__urlBase}{self.__versao}/{self.__idioma}/random'
         requisicao = requests.get(url)
         if requisicao.status_code ==200:
@@ -71,3 +72,8 @@ class Biblia():
 
         else:
             self.texto = "Endereço Incorreto!"
+
+    def versiculoAleatorioAudio(self):
+        self.versiculoAleatorio()
+        engine = pyttsx3.init()
+        engine.save_to_file(self.texto, 'test.mp3')
