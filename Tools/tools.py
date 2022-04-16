@@ -22,7 +22,6 @@ def converterTexto(texto, idChat):
     :return:
     """
     t = texto[3:]
-    print(f'{time()}-{idChat} - Converter: {t}')
     f_path = f'mp3s\{idChat}-c.mp3'
 
     engine = pyttsx3.init()
