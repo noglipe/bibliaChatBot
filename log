@@ -1,0 +1,15 @@
+M;16/04/22 12:54:30;;Start ChatBot
+M;16/04/22 12:54:34;;Solicitando Versículo Aleatório
+M;16/04/22 12:54:34;5163519610;Preparando Consulta Aleatória
+M;16/04/22 12:54:34;5163519610;Realizando Consulta na API
+M;16/04/22 12:54:35;5163519610;Obtendo Texto
+M;16/04/22 12:54:35;5163519610;Retorno do Texto
+M;16/04/22 12:54:35;;Versículo Enviado
+M;16/04/22 12:54:38;;Versículo em Audio Solicitado
+M;16/04/22 12:54:38;5163519610;Convertendo Texto em Audio
+M;16/04/22 12:54:38;5163519610;Preparando Consulta Aleatória
+M;16/04/22 12:54:38;5163519610;Realizando Consulta na API
+M;16/04/22 12:54:39;5163519610;Obtendo Texto
+M;16/04/22 12:54:40;5163519610;Arquivo de Audio Salvo no Servidor
+M;16/04/22 12:54:41;;Versículo em Audio Enviado
+M;16/04/22 12:54:41;;Arquivo de Audio Excluído so Servidor
