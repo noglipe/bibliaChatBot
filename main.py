@@ -5,10 +5,14 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 import Tools.tools
 import Tools.img_to_texto
 from Config import config
+
 from Biblia.biblia import Biblia
+from meulog.meulog import Log
+
+log = Log('log')
 
 bot = telebot.TeleBot(os.environ['CHAVE_API'])
-print("ChatBot Iniciado")
+log.msg("Start ChatBot")
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -19,7 +23,8 @@ def send_welcome(message):
     :return:
     """
     bot.reply_to(message, f'Olá {message.chat.first_name}')
-    print(f'{Tools.tools.time()}-{message.chat.id} - Bem Vindo')
+    log.setId((message.chat.id))
+    log.msg("Bem vindo Acionado!")
     texto = "<b>Bem Vindo a Biblia Chat Bot</b>\n" \
             "⚠ - Voce pode buscar versículos de diversas maneiras:\n \n" \
             "<b>Capítulo Inteiro:</b> \n    ➡Livro.Capitulo\n" \
@@ -36,38 +41,40 @@ def send_welcome(message):
 
 @bot.message_handler(commands=["va", "Va", "vA", "VA"])
 def verciculoAleatorio(mensagem):
-    print(f'{Tools.tools.time()}-{mensagem.chat.id} - Solicitando Versículo Aleatório')
+    log.msg("Solicitando Versículo Aleatório")
     try:
         biblia = Biblia(mensagem.chat.id)
         biblia.versiculoAleatorio()
         bot.send_message(mensagem.chat.id, biblia.texto())
-        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Versículo Enviado')
+        log.msg("Versículo Enviado")
     except Exception as e:
         Tools.tools.enviarErroAdmin(bot, mensagem, e, 'verciculoAleatorio')
+        log.erro('verciculoAleatorio', e)
 
 
 
 @bot.message_handler(commands=["aa"])
 def verciculoAleatorioAudio(mensagem):
-    print(f'{Tools.tools.time()}-{mensagem.chat.id} - Versículo em Audio Solicitado')
+    log.msg("Versículo em Audio Solicitado")
     try:
         biblia = Biblia(mensagem.chat.id)
         f_patch = biblia.converterAudioESalvar(mensagem.chat.id)
         # bot.send_message(mensagem.chat.id, biblia.texto())
         file = open(f_patch, 'rb')
         bot.send_audio(mensagem.chat.id, file)
-        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Versículo em Audio Enviado')
+        log.msg("Versículo em Audio Enviado")
         file.close()
         if os.path.exists(f_patch):
             os.remove(f_patch)
-            print(f'{Tools.tools.time()}-{mensagem.chat.id} - Arquivo de Audio Excluído so Servidor')
+            log.msg("Arquivo de Audio Excluído so Servidor")
     except Exception as e:
-        Tools.tools.enviarErroAdmin(bot, mensagem, e, 'verciculoAleatorio')
+        Tools.tools.enviarErroAdmin(bot, mensagem, e, 'verciculoAleatorioAudio')
+        log.erro('verciculoAleatorioAudio', e)
 
 
 @bot.message_handler(commands=["v", "V"])
 def verciculo(mensagem):
-    print(f'{Tools.tools.time()}-{mensagem.chat.id} - Versículo Solicitado')
+    log.msg("Versículo Solicitado")
     if mensagem.text == "/v":
         texto = "<b>😓 - Endereço do texto não foi informado!</b>\n" \
                 "⚠ - A busca pode ser feita de diversas maneiras:\n \n" \
@@ -77,36 +84,36 @@ def verciculo(mensagem):
                 "\n<b>Exemplo: /v jo.3.16</b>\n\n" \
                 "⚠ - Ficar atento a Colocar um . (PONTO) entre os elementos do endereço"
         bot.send_message(mensagem.chat.id, texto, parse_mode="HTML")
-        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Solicitação não Validade')
+        log.msg("Solicitação não Validada")
     else:
         try:
-            print(f'{Tools.tools.time()}-{mensagem.chat.id} - Solicitação de Versículo Validada')
+            log.msg("Solicitação de Versículo Validada")
             biblia = Biblia(mensagem.chat.id, mensagem.text)
             biblia.versiculo()
             bot.send_message(mensagem.chat.id, biblia.texto())
-            print(f'{Tools.tools.time()}-{mensagem.chat.id} - Versículo Enviado!')
+            log.msg("Versículo Enviado!")
         except Exception as e:
             Tools.tools.enviarErroAdmin(bot, mensagem, e, "verciculo")
+            log.erro('verciculo', e)
 
 
 @bot.message_handler(commands=["c", "C"])
 def converterAudio(mensagem):
-    print(f'{Tools.tools.time()}-{mensagem.chat.id} - Conversor de Audio Solicitado!')
+    log.msg("Conversor de Audio Solicitado!")
     try:
         f_patch = Tools.tools.converterTexto(mensagem.text, mensagem.chat.id)
-        print(f_patch)
-
         file = open(f_patch, 'rb')
-
         bot.send_audio(mensagem.chat.id, file)
+        log.msg("Audio Enviado!")
 
-        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Audio Enviado!')
         file.close()
+
         if os.path.exists(f_patch):
             os.remove(f_patch)
-            print(f'{Tools.tools.time()}-{mensagem.chat.id} - Arquivo Removido do Servidor')
+            log.msg("Arquivo Removido do Servidor!")
     except Exception as e:
         Tools.tools.enviarErroAdmin(bot, mensagem, e, "converterAudio")
+        log.erro('converterAudio', e)
 
 """
 @bot.message_handler(content_types= ["photo"])
@@ -129,7 +136,7 @@ def fotoPtexto(mensagem):
 @bot.message_handler(func=lambda mensagem: True)
 def responderTudo(mensagem):
     if config.devAtivo == True:
-        print(f'{Tools.tools.time()}-{mensagem.chat.id} - Modo Desenvolvedor!')
+        log.msg("Modo Desenvolvedor!")
         print("Já Acabou?")
         bot.reply_to(mensagem, "ChatBot Rodando em Modo de Desenvolvimento!\nSISTEMA INSTAVEL")
 

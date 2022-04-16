@@ -3,7 +3,7 @@ import os
 import requests
 import pyttsx3
 from datetime import datetime
-
+from meulog.meulog import Log
 
 def time():
     return str(datetime.now().strftime("%d/%m/%y %H:%M:%S"))
@@ -31,7 +31,6 @@ class Biblia:
         :param endereco:
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Preenchendo Variáveis')
 
         list_endereco = endereco[3:].lower().split(".")
         self.__opcao = len(list_endereco)
@@ -68,13 +67,16 @@ class Biblia:
 
         self.converterEndereco(endereco)
 
+        self.__log = Log('log', self.__idChat)
+        self.__log.setId(self.__idChat)
+
     def construirTexto(self, js):
         """
         Recebe o retorno da consulta e constrói o texto que será enviado ao usuário
         :param js:
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Obtendo Texto')
+        self.__log.msg("Obtendo Texto")
         self.__texto = ""
 
         if self.__opcao == 3 or self.__opcao == 1:  # Livro, Capítulo e Versículo
@@ -88,8 +90,6 @@ class Biblia:
                 self.__texto = self.__texto + " " + endereco
 
             if self.__opcao > 3:
-                print(self.__opcao)
-                print(self.__versiculos[0])
                 endereco = f'{js["book"]["name"]} : {self.__capitulo} : {self.__versiculos[0]} - {self.__versiculos[1]}'
                 for verse in js["verses"]:
                     if int(verse["number"]) > int(self.__versiculos[0]) and int(verse["number"]) < int(
@@ -103,7 +103,7 @@ class Biblia:
         :param url_consulta:
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Realizando Consulta na API')
+        self.__log.msg("Realizando Consulta na API")
         r = requests.get(url_consulta)
 
         if r.status_code == 200:
@@ -116,7 +116,7 @@ class Biblia:
         Preenche a variável texto com o retorno da busca por um versículo aleatório na API
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Preparando Consulta Aleatória')
+        self.__log.msg("Preparando Consulta Aleatória")
         url_consulta = f'{self.__urlBase}{self.__versao}/{self.__idioma}/random'
         self.realizarConsulta(url_consulta)
 
@@ -125,7 +125,7 @@ class Biblia:
         Realiza a consulta paseado no endereço informado e armazena o resultado na variável texto
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Preparando Consulta de versículo')
+        self.__log.msg("Preparando Consulta de versículo")
         if self.__opcao == 3:
             url_consulta = f'{self.__urlBase}{self.__versao}/{self.__livro}/{self.__capitulo}/{self.__versiculos[0]}'
         else:
@@ -139,7 +139,7 @@ class Biblia:
         A capacidade do Telergam é de 4096 caracteres
         :return:
         """
-        print(f'{time()}-{self.__idChat} - Retorno do Texto')
+        self.__log.msg("Retorno do Texto")
         if len(self.__texto) > 4096:
             return "Tamano do Texto não Suportado pelo Telegram"
         return self.__texto
@@ -150,7 +150,7 @@ class Biblia:
         :param idChat: Id do chat
         :return: str
         """
-        print(f'{time()}-{self.__idChat} - Convertendo Texto em Audio')
+        self.__log.msg("Convertendo Texto em Audio")
         self.versiculoAleatorio()
 
         engine = pyttsx3.init()
@@ -159,7 +159,7 @@ class Biblia:
         engine.runAndWait()
 
         while not (os.path.exists(f_path)):
-            print(f'{time()}-{idChat} - Arquivo de Audio Sendo Gerado')
+            self.__log.msg("LooP Arquivo de Audio Sendo Gerad")
 
-        print(f'{time()}-{idChat} - Arquivo de Audio Salvo no Servidor!')
+        self.__log.msg("Arquivo de Audio Salvo no Servidor")
         return f_path

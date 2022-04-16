@@ -1,11 +1,10 @@
 import os
 from datetime import datetime
-
 import pyttsx3
 
 
 def time():
-    return str(datetime.now().strftime("%d/%m/%y %H:%M:%S"))
+    return str(datetime.now().strftime("%d/%m/%y;%H:%M:%S"))
 
 
 def enviarErroAdmin(bot, mensagem, e, em):
@@ -14,7 +13,6 @@ def enviarErroAdmin(bot, mensagem, e, em):
                      str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(
                          datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 " + str(e) + "\n Erro em: " + em)
 
-    print(f'{time()}-{mensagem.chat.id} - Erro Reportado ({em})')
 
 
 def converterTexto(texto, idChat):
