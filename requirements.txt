@@ -1,5 +1,2 @@
 pyTelegramBotAPI
 Requests
-pyttsx3
-pytesseract
-opencv-python

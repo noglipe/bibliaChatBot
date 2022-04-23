@@ -3,53 +3,81 @@ import meulog.tools
 
 class Log:
     """
-    Class log para registrar e exibir os erros
+    Registrar e exibir os erros
+
+    Methods:
+        erro
+        inf
+        setArquivo
+        setId
+        tente
     """
 
-    __texto: ''
-
-    def __init__(self, arquivo, id=""):
+    def __init__(self, path='log.csv', identificador='0'):
         """
-        :param id: Identificador
-        :type id: str
-        :param arquivo: Local do arquivo que será salvo
+        :param identificador: Caso queira registrar algum identificador
+        :type identificador: str
+        :param path: Local do arquivo que será salvo
+        :type path: str
         """
-        self.__arquivo = arquivo
-        self.__id = id
+        self.__path = path
+        self.__id = identificador
 
     def __registrar(self, texto):
         """
-        Salvar no arquivo de log o Erro
+        Salvar no arquivo de log
         :param texto:
         :return:
         """
         texto = texto.replace('-', ';')
-        self.__f = open('log', 'a', encoding="utf-8")
+        self.__f = open(self.__path, 'a', encoding="utf-8")
         self.__f.writelines(texto)
         self.__f.close()
 
-    def setId(self, id):
-        self.__id = id
-
-    def erro(self, localErro, em):
+    def erro(self, funcao_erro, em):
         """
-        Recebe um identificador, Local do Erro e Erro a ser Exibido e Registrada
-        :param localErro: Onde Ocorreu o Erro
-        :type localErro: str
+        Exibir e Registrar erro
+        :param funcao_erro: Onde Ocorreu o Erro
+        :type funcao_erro: str
         :param em: Erro retornado pelo Try
         """
-        texto = f'E-{meulog.tools.dataHora()}-{self.__id}-{localErro}-{str(em)}\n'
-        print(texto)
+        texto = f'E-{meulog.tools.dataHora()}-{self.__id}-{funcao_erro}-{str(em)}'
+        print(texto+'\n')
         self.__registrar(texto)
 
-    def msg(self, msg):
+    def inf(self, msg):
         """
-        Recebe um identificador e a mensagem a ser Exibida e Registrada
-        :param id: Identificador
-        :type id: str
-        :param msg: Mensagem a ser Registrada
-        :type msg: str
+        Exibir e Registrar informação.
+        :param msg: Mensagem a ser registrada.
+        :type msg: str.
         """
         texto = f'M-{meulog.tools.dataHora()}-{self.__id}-{msg}'
         print(texto)
-        self.__registrar(texto+"\n")
+        self.__registrar(texto + '\n')
+
+    def setArquivo(self, arquivo):
+        """
+        Altera o caminho do Arquivo
+        """
+        self.__path = arquivo
+
+    def setId(self, identificador):
+        self.__id = identificador
+
+    def setFuncao(self, funcao):
+        self.__funcao = funcao
+
+    def tente(self, func):
+        """
+
+        :param func:
+        :return:
+        """
+
+        def tentar(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except Exception as e:
+                self.erro(func.__name__, e)
+
+        return tentar

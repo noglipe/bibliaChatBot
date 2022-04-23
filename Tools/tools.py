@@ -3,17 +3,29 @@ from datetime import datetime
 import pyttsx3
 
 
+def tente(self, func):
+    """
+
+    :param func:
+    :return:
+    """
+
+    def tentar(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            self.erro(func.__name__, e)
+
+    return tentar
+
 def time():
     return str(datetime.now().strftime("%d/%m/%y;%H:%M:%S"))
-
 
 def enviarErroAdmin(bot, mensagem, e, em):
     bot.send_message(mensagem.chat.id, "Algo deu Errado!\nDev já foi acionado")
     bot.send_message(os.environ['MY_ID'],
                      str(mensagem.chat.first_name) + "🚨 Filipe Algo deu Errado! Veja: \n" + "📅 " + str(
                          datetime.now().strftime("%d/%m/%y %H:%M:%S")) + "\n🤦 " + str(e) + "\n Erro em: " + em)
-
-
 
 def converterTexto(texto, idChat):
     """

@@ -1,12 +1,11 @@
-import os
-
 import requests
-import pyttsx3
 from datetime import datetime
 from meulog.meulog import Log
 
+
 def time():
     return str(datetime.now().strftime("%d/%m/%y %H:%M:%S"))
+
 
 class Biblia:
     """
@@ -53,7 +52,6 @@ class Biblia:
         :param endereco: endereço do texto Bíblico
         :return :
         """
-        print(f'{time()}-{idChat} - Instanciando Bíblia!')
         self.__idChat = idChat
         self.__endereco = endereco
         self.__opcao = 0
@@ -69,6 +67,7 @@ class Biblia:
 
         self.__log = Log('log', self.__idChat)
         self.__log.setId(self.__idChat)
+        self.__log.inf('Instanciando Bíblia')
 
     def construirTexto(self, js):
         """
@@ -76,7 +75,7 @@ class Biblia:
         :param js:
         :return:
         """
-        self.__log.msg("Obtendo Texto")
+        self.__log.inf("Obtendo Texto")
         self.__texto = ""
 
         if self.__opcao == 3 or self.__opcao == 1:  # Livro, Capítulo e Versículo
@@ -103,7 +102,7 @@ class Biblia:
         :param url_consulta:
         :return:
         """
-        self.__log.msg("Realizando Consulta na API")
+        self.__log.inf("Realizando Consulta na API")
         r = requests.get(url_consulta)
 
         if r.status_code == 200:
@@ -116,7 +115,7 @@ class Biblia:
         Preenche a variável texto com o retorno da busca por um versículo aleatório na API
         :return:
         """
-        self.__log.msg("Preparando Consulta Aleatória")
+        self.__log.inf("Preparando Consulta Aleatória")
         url_consulta = f'{self.__urlBase}{self.__versao}/{self.__idioma}/random'
         self.realizarConsulta(url_consulta)
 
@@ -125,7 +124,7 @@ class Biblia:
         Realiza a consulta paseado no endereço informado e armazena o resultado na variável texto
         :return:
         """
-        self.__log.msg("Preparando Consulta de versículo")
+        self.__log.inf("Preparando Consulta de versículo")
         if self.__opcao == 3:
             url_consulta = f'{self.__urlBase}{self.__versao}/{self.__livro}/{self.__capitulo}/{self.__versiculos[0]}'
         else:
@@ -139,27 +138,7 @@ class Biblia:
         A capacidade do Telergam é de 4096 caracteres
         :return:
         """
-        self.__log.msg("Retorno do Texto")
+        self.__log.inf("Retorno do Texto")
         if len(self.__texto) > 4096:
             return "Tamano do Texto não Suportado pelo Telegram"
         return self.__texto
-
-    def converterAudioESalvar(self, idChat):
-        """
-        Retorna Caminho do Arquivo de audio ou erro!
-        :param idChat: Id do chat
-        :return: str
-        """
-        self.__log.msg("Convertendo Texto em Audio")
-        self.versiculoAleatorio()
-
-        engine = pyttsx3.init()
-        f_path = f'mp3s/{idChat}-v.mp3'
-        engine.save_to_file(self.__texto, f_path)
-        engine.runAndWait()
-
-        while not (os.path.exists(f_path)):
-            self.__log.msg("LooP Arquivo de Audio Sendo Gerad")
-
-        self.__log.msg("Arquivo de Audio Salvo no Servidor")
-        return f_path
